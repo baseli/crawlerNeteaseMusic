@@ -65,6 +65,14 @@ const getDataFromSet = async (key) => {
     return res;
 }
 
+const removeItemFromSet = async (key, value) => {
+    return await redisClient.srem(key, value);
+}
+
+const randomGet = async (key) => {
+    return await redisClient.srandmember(key);
+}
+
 const flushSet = async (key) => {
     let res = await redisClient.del(key);
 
@@ -77,5 +85,7 @@ module.exports = {
     itemLength: len,
     set: setDataToSet,
     get: getDataFromSet,
-    del: flushSet
+    del: flushSet,
+    randomGet: randomGet,
+    remove: removeItemFromSet
 };

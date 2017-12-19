@@ -3,7 +3,6 @@
 const request = require('./model/request');
 const cheerio = require('cheerio');
 const process = require('process');
-const eagles = require('./model/eagles');
 const sleep = require('./model/sleep');
 const redis = require('./model/redis');
 const config = require('./config/config.json');
@@ -20,7 +19,7 @@ let data = {
     // let ret = JSON.parse(res);
 
     // console.log(ret.total)
-    let res = await request.nightmare('http://music.163.com/discover/artist/cat?id=1002');
+    let res = await request.nightmare('http://music.163.com/#/discover/artist/cat?id=1002');
     let $ = cheerio.load(res);
     let result = [];
     let list = [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 0];

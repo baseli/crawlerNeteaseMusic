@@ -6,6 +6,7 @@ const request = require('superagent');
 const agent = require('../config/agent.json');
 const redis = require('./redis.js');
 const sleep = require('./sleep.js');
+const proxy = require('./proxy')
 
 require('superagent-proxy')(request);
 require('superagent-charset')(request);
@@ -19,7 +20,7 @@ const key = 'proxy';
  */
 const requestFunc = async (method, url, cookie, data, referer) => {
     let randomAgent = agent[Math.floor(Math.random() * (agent.length - 1))];
-    let proxy = await redis.get(key);
+    let proxyAddr = await proxy.get();
     cookie = cookie || '';
     data = data || {};
     referer = referer || '';
@@ -57,10 +58,6 @@ const requestFunc = async (method, url, cookie, data, referer) => {
     }
 };
 
-const getProxy = async () => {
-    return await redis.get(key);
-}
-
 class singleNightmare {
     static getInstance() {
         if (!singleNightmare.instance) {
@@ -70,7 +67,6 @@ class singleNightmare {
             //     silent: true
             // });
             // xvfb.startSync();
-            let proxy = getProxy();
             singleNightmare.instance = require('./nightmareFix')({
                 show: true,
                 webPreferences: {
@@ -85,22 +81,29 @@ class singleNightmare {
 
 const nightmareFunc = async (url) => {
     const nightmare = singleNightmare.getInstance();
+    let proxyAddr = await proxy.get();
 
     return new Promise((resolve, reject) => {
         nightmare
-            .proxy('HTTP://125.211.202.26:53281')
-            .goto(url)
+            // .proxy(proxyAddr)
+            .goto(url, {
+                Referer: 'http://music.163.com',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
+            })
             .wait('#g_iframe')
             .evaluate(function(){
                 let dom = document.getElementById('g_iframe').contentDocument.querySelectorAll('html')[0];
                 return dom.innerHTML;
             })
-            .end()
             .then(async (content) => {
                 // await resolve({content: content, cookie: cookie});
                 await resolve(content)
             })
             .catch(function (error) {
+                if (error.code == -101) {
+                    proxy.remove(proxyAddr);
+                }
+
                 // reject(`crawler ${url} faild: ${error}`);
                 reject(error);
             });

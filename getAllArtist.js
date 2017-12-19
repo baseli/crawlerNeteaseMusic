@@ -3,7 +3,6 @@
 const request = require('./model/request');
 const cheerio = require('cheerio');
 const process = require('process');
-const eagles = require('./model/eagles');
 const sleep = require('./model/sleep');
 const redis = require('./model/redis');
 const log = require('./model/log');
@@ -29,14 +28,17 @@ const setKeyName = 'allArtists';
           }
         });
 
+        if (result.length > 0) {
+          redis.set(setKeyName, ...result);
+        }
+
         await log.success(`crawler ${value} success, result: ${JSON.stringify(result)}.`);
         // process.exit(0);
       } catch (error) {
-        log.error(`crawler ${value} error.`);
+        await log.error(`crawler ${value} error.`);
         // process.exit(0);
       } finally {
         sleep(20);
-        console.log(123);
       }
     }
   }
