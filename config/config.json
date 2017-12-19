@@ -1,0 +1,7 @@
+{
+    "REDIS_HOST": "127.0.0.1",
+    "REDIS_PORT": "6379",
+
+    "CRAWLER_ERROR_COUNT": 5,
+    "CRAWLER_TIME_SEP": 1
+}

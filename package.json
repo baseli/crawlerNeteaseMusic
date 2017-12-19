@@ -1,0 +1,26 @@
+{
+  "name": "crawler",
+  "version": "1.0.0",
+  "description": "node crawler",
+  "main": "test.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "liwd",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "0.22.*",
+    "ioredis": "2.5.*",
+    "log4js": "^2.4.1",
+    "nightmare": "^2.10.0",
+    "pg": "6.*",
+    "superagent": "^3.5.2",
+    "superagent-charset": "latest",
+    "superagent-proxy": "latest",
+    "uuid": "latest",
+    "xvfb": "latest"
+  }
+}
