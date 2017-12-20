@@ -7,6 +7,7 @@ const sleep = require('./model/sleep');
 const redis = require('./model/redis');
 const log = require('./model/log');
 const config = require('./config/config.json');
+const {transaction} = require('./model/pgsql')
 const getKeyName = 'artist';
 const setKeyName = 'allArtists';
 
@@ -20,16 +21,40 @@ const setKeyName = 'allArtists';
         let $ = cheerio.load(res);
         let result = [];
         
-        $('.sml > a').each(function() {
-          let id = $(this).attr('href').match(/\d{1,}/)
+        $('.msk').each(function() {
+          let id = $(this).attr('href').match(/\d{1,}/);
+          let name = $(this).attr('title');
+          name = name.replace('的音乐', '');
 
           if (id) {
-            result.push(parseInt(id[0]));
+            result.push({
+              id: parseInt(id[0]),
+              name: name
+            });
+          }
+        });
+
+        $('.sml > a.s-fc0').each(function() {
+          let id = $(this).attr('href').match(/\d{1,}/);
+          let name = $(this).text();
+
+          if (id) {
+            result.push({
+              id: parseInt(id[0]),
+              name: name
+            });
           }
         });
 
         if (result.length > 0) {
-          redis.set(setKeyName, ...result);
+          await transaction((client) => {
+            result.forEach(v => {
+              client.query('insert into l_singers (id, name) values ($1, $2)', [v.id, v.name]);
+            });
+          });
+
+          let ids = result.map(v => v.id);
+          redis.set(setKeyName, ...ids);
         }
 
         await log.success(`crawler ${value} success, result: ${JSON.stringify(result)}.`);

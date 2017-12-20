@@ -3,5 +3,11 @@
     "REDIS_PORT": "6379",
 
     "CRAWLER_ERROR_COUNT": 5,
-    "CRAWLER_TIME_SEP": 1
+    "CRAWLER_TIME_SEP": 1,
+
+    "DB_HOST": "127.0.0.1",
+    "DB_PORT": 15432,
+    "DB_USER": "postgres",
+    "DB_PASS": "postgres",
+    "DB_NAME": "netease"
 }
