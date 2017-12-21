@@ -9,7 +9,9 @@ CREATE TABLE l_albums (
   id BIGINT NOT NULL,
   singer_id BIGINT NOT NULL,
   name VARCHAR(255) NOT NULL DEFAULT '',
-  comment_count INTEGER NOT NULL
+  comment_count INTEGER NOT NULL,
+  datetime timestamp without time zone,
+  cover_image varchar(255)
 );
 
 -- 歌曲表

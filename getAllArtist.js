@@ -7,7 +7,7 @@ const sleep = require('./model/sleep');
 const redis = require('./model/redis');
 const log = require('./model/log');
 const config = require('./config/config.json');
-const {transaction} = require('./model/pgsql')
+const {transaction} = require('./model/pgsql');
 const getKeyName = 'artist';
 const setKeyName = 'allArtists';
 
@@ -15,7 +15,13 @@ const setKeyName = 'allArtists';
   while (true) {
     let value = await redis.get('artist');
 
-    if (value != null) {
+    if (value == null) {
+      let length  = await redis.setLength(getKeyName);
+
+      if (length == 0) {
+        process.exit(0);
+      }
+    } else {
       try {
         let res = await request.nightmare(value);
         let $ = cheerio.load(res);

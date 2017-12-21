@@ -79,6 +79,10 @@ const flushSet = async (key) => {
     return res;
 }
 
+const setLength = async (key) => {
+    return await redis.scard(key);
+}
+
 module.exports = {
     setItem: set,
     getItem: get,
@@ -87,5 +91,6 @@ module.exports = {
     get: getDataFromSet,
     del: flushSet,
     randomGet: randomGet,
-    remove: removeItemFromSet
+    remove: removeItemFromSet,
+    setLength: setLength
 };
