@@ -45,10 +45,11 @@ if (cluster.isMaster) {
               client.query(`update l_songs set comment_count = ${result.total} where id = ${id}`);
             })
 
+            console.log(`crawler ${id} success.`);
           }
         }
       } catch (error) {
-        console.log(error);
+        console.log(`crawler ${id} faild: error`);
       } finally {
         sleep(5);
       }
